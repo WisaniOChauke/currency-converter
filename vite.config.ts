@@ -12,7 +12,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.frankfurter\.app\/.*/i,
+            urlPattern: /^https:\/\/api\.frankfurter\.dev\/.*/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'api-cache',
