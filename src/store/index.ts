@@ -50,7 +50,7 @@ export const useAppStore = create<AppState>()(
         defaultCurrency: 'USD',
       },
       currencies: [],
-      amount: '1',
+      amount: '',
       fromCurrency: 'USD',
       toCurrency: 'EUR',
       conversionResult: null,
