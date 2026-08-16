@@ -28,7 +28,7 @@ export const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
     const favoritesSet = new Set(favorites);
     return {
       favoriteOptions: currencies.filter(c => favoritesSet.has(c.code)),
-      regularOptions: currencies.filter(c => !favoritesSet.has(c.code)),
+      regularOptions: currencies,
     };
   }, [currencies, favorites]);
 
