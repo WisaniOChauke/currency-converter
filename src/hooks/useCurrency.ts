@@ -19,7 +19,7 @@ export const useCurrency = () => {
 
   const fetchCurrencies = useCallback(() => {
     setError(null);
-    fetch('https://api.frankfurter.app/currencies')
+    fetch('https://api.frankfurter.dev/v1/currencies')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();

@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: 'https://api.frankfurter.app',
+  BASE_URL: 'https://api.frankfurter.dev/v1',
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
   CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
