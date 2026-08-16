@@ -57,7 +57,7 @@ export const useCurrency = () => {
 
     try {
       const numAmount = parseFloat(amount);
-      const response = await apiService.convertCurrency(numAmount, fromCurrency, toCurrency);
+      const response = await apiService.convertCurrency(fromCurrency, toCurrency);
 
       if (response.success) {
         const result = {

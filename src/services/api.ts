@@ -40,7 +40,6 @@ class ApiService {
   }
 
   async convertCurrency(
-    amount: number,
     from: string,
     to: string
   ): Promise<ApiResponse<ExchangeRate>> {
@@ -51,8 +50,8 @@ class ApiService {
         date: string;
         rates: Record<string, number>;
       }>(
-        `${API_CONFIG.BASE_URL}/latest?amount=${amount}&from=${from}&to=${to}`,
-        `convert-${amount}-${from}-${to}`
+        `${API_CONFIG.BASE_URL}/latest?from=${from}&to=${to}`,
+        `convert-${from}-${to}`
       );
 
       const result: ExchangeRate = {
