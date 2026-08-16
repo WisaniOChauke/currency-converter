@@ -21,7 +21,7 @@ export const CurrencyConverter: React.FC = () => {
   const setError = useAppStore(s => s.setError);
   const clearHistory = useAppStore(s => s.clearHistory);
 
-  const { currencies, conversionResult, isConverting, convertCurrency } = useCurrency();
+  const { currencies, conversionResult, isConverting, convertCurrency, fetchCurrencies } = useCurrency();
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -66,6 +66,14 @@ export const CurrencyConverter: React.FC = () => {
             step="any"
             error={error || undefined}
           />
+          {error && currencies.length === 0 && (
+            <button
+              onClick={fetchCurrencies}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              Retry loading currencies
+            </button>
+          )}
         </motion.div>
 
         {/* Currency Selection */}

@@ -17,11 +17,13 @@ export const useCurrency = () => {
   const addToHistory = useAppStore(s => s.addToHistory);
   const setError = useAppStore(s => s.setError);
 
-  useEffect(() => {
-    if (currencies.length > 0) return;
-
+  const fetchCurrencies = useCallback(() => {
+    setError(null);
     fetch('https://api.frankfurter.app/currencies')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data: Record<string, string>) => {
         const currencyList: Currency[] = Object.entries(data).map(([code, name]) => ({
           code,
@@ -30,10 +32,15 @@ export const useCurrency = () => {
         }));
         setCurrencies(currencyList);
       })
-      .catch(() => {
-        setError('Failed to load currencies. Please refresh.');
+      .catch((err: unknown) => {
+        setError(`Failed to load currencies: ${err instanceof Error ? err.message : 'Network error'}. Click retry.`);
       });
-  }, []);
+  }, [setCurrencies, setError]);
+
+  useEffect(() => {
+    if (currencies.length > 0) return;
+    fetchCurrencies();
+  }, [fetchCurrencies]);
 
   const convertCurrency = useCallback(async () => {
     if (!validateAmount(amount)) {
@@ -73,5 +80,5 @@ export const useCurrency = () => {
     }
   }, [amount, fromCurrency, toCurrency]);
 
-  return { currencies, conversionResult, isConverting, convertCurrency };
+  return { currencies, conversionResult, isConverting, convertCurrency, fetchCurrencies };
 };
