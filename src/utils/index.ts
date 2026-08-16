@@ -1,13 +1,15 @@
-import { CURRENCY_SYMBOLS } from '@/constants';
 
 export const formatCurrency = (amount: number, currency: string): string => {
-  const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
-  }).format(amount).replace(currency, symbol);
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toFixed(2)}`;
+  }
 };
 
 export const safeJsonParse = <T>(json: string | null, fallback: T): T => {
