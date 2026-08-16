@@ -1,5 +1,4 @@
 import { API_CONFIG, ERROR_CODES } from '@/constants';
-import { retry } from '@/utils';
 import type { ApiResponse, ExchangeRate, HistoricalRate } from '@/types';
 
 class ApiService {
@@ -11,25 +10,16 @@ class ApiService {
       return cached.data as T;
     }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
-
     try {
-      const response = await retry(async () => {
-        const res = await fetch(url, { signal: controller.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        return res;
-      }, API_CONFIG.RETRY_ATTEMPTS);
-
-      const data = await response.json();
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      const data = await res.json();
       this.cache.set(cacheKey, { data, timestamp: Date.now() });
       return data;
     } catch (error) {
       throw new Error(
         error instanceof Error ? error.message : ERROR_CODES.NETWORK_ERROR
       );
-    } finally {
-      clearTimeout(timeoutId);
     }
   }
 

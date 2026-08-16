@@ -68,8 +68,8 @@ export const useCurrency = () => {
           amount: numAmount,
           from: fromCurrency,
           to: toCurrency,
-          result: response.data.rate,
-          rate: response.data.rate / numAmount,
+          result: numAmount * response.data.rate,
+          rate: response.data.rate,
           timestamp: Date.now(),
         };
 
