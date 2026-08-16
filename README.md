@@ -252,8 +252,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 **Support**
 
-For support, email support@currencyconverterpro.com or join our Slack channel.
+For support, email wiserowens@gmail.com or join our Slack channel.
 
 ---
 
-**Built with ❤️ by the Currency Converter Pro Team**
+**Built with ❤️ by the The Wise One and his team of AI coding agents!**
