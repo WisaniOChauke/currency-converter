@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useAppStore } from '@/store';
 import { apiService } from '@/services/api';
 import { validateAmount, getCurrencyName } from '@/utils';
@@ -17,33 +17,22 @@ export const useCurrency = () => {
   const addToHistory = useAppStore(s => s.addToHistory);
   const setError = useAppStore(s => s.setError);
 
-  const hasFetched = useRef(false);
-
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
+    if (currencies.length > 0) return;
 
-    const fetchCurrencies = async () => {
-      try {
-        const response = await apiService.getCurrencies();
-        if (response.success && Object.keys(response.data).length > 0) {
-          const currencyList: Currency[] = Object.entries(response.data).map(
-            ([code, name]) => ({
-              code,
-              name: name || getCurrencyName(code),
-              symbol: code,
-            })
-          );
-          setCurrencies(currencyList);
-        } else {
-          setError('Failed to load currencies. Please refresh.');
-        }
-      } catch {
-        setError('Network error. Please check your connection.');
-      }
-    };
-
-    fetchCurrencies();
+    fetch('https://api.frankfurter.app/currencies')
+      .then(res => res.json())
+      .then((data: Record<string, string>) => {
+        const currencyList: Currency[] = Object.entries(data).map(([code, name]) => ({
+          code,
+          name: name || getCurrencyName(code),
+          symbol: code,
+        }));
+        setCurrencies(currencyList);
+      })
+      .catch(() => {
+        setError('Failed to load currencies. Please refresh.');
+      });
   }, []);
 
   const convertCurrency = useCallback(async () => {
@@ -51,7 +40,6 @@ export const useCurrency = () => {
       setError('Please enter a valid amount');
       return;
     }
-
     if (fromCurrency === toCurrency) {
       setError('Please select different currencies');
       return;
