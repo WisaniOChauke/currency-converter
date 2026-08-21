@@ -1,4 +1,5 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAppStore } from '@/store';
 import { apiService } from '@/services/api';
 import { validateAmount, getCurrencyName } from '@/utils';
@@ -17,30 +18,25 @@ export const useCurrency = () => {
   const addToHistory = useAppStore(s => s.addToHistory);
   const setError = useAppStore(s => s.setError);
 
-  const fetchCurrencies = useCallback(() => {
-    setError(null);
-    fetch('https://api.frankfurter.dev/v1/currencies')
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data: Record<string, string>) => {
-        const currencyList: Currency[] = Object.entries(data).map(([code, name]) => ({
-          code,
-          name: name || getCurrencyName(code),
-          symbol: code,
-        }));
-        setCurrencies(currencyList);
-      })
-      .catch((err: unknown) => {
-        setError(`Failed to load currencies: ${err instanceof Error ? err.message : 'Network error'}. Click retry.`);
-      });
-  }, [setCurrencies, setError]);
-
-  useEffect(() => {
-    if (currencies.length > 0) return;
-    fetchCurrencies();
-  }, [fetchCurrencies]);
+  const { refetch: fetchCurrencies } = useQuery({
+    queryKey: ['currencies'],
+    queryFn: async () => {
+      const res = await fetch('https://api.frankfurter.dev/v1/currencies');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data: Record<string, string> = await res.json();
+      const currencyList: Currency[] = Object.entries(data).map(([code, name]) => ({
+        code,
+        name: name || getCurrencyName(code),
+        symbol: code,
+      }));
+      setCurrencies(currencyList);
+      return currencyList;
+    },
+    staleTime: 60 * 60 * 1000,
+    enabled: currencies.length === 0,
+    throwOnError: false,
+    meta: { onError: (err: unknown) => setError(`Failed to load currencies: ${err instanceof Error ? err.message : 'Network error'}`) },
+  });
 
   const convertCurrency = useCallback(async () => {
     if (!validateAmount(amount)) {

@@ -1,5 +1,9 @@
 # Currency Converter Pro 🚀
 
+> Real-time currency conversion with a clean, accessible interface.
+
+🔗 **Live:** [currency-ease.vercel.app](https://currency-ease.vercel.app/)
+
 A world-class, enterprise-grade currency converter built with React, TypeScript, and modern web technologies.
 
 ## ✨ Features
@@ -69,7 +73,7 @@ A world-class, enterprise-grade currency converter built with React, TypeScript,
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/WisaniOChauke/currency-converter.git
 cd currency-converter
 
 # Install dependencies

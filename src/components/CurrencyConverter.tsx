@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiArrowsRightLeft, HiClock, HiTrash } from 'react-icons/hi2';
+import { HiArrowsRightLeft, HiClock, HiTrash, HiArrowDownTray } from 'react-icons/hi2';
 import { useAppStore } from '@/store';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatCurrency, validateAmount } from '@/utils';
@@ -22,6 +22,20 @@ export const CurrencyConverter: React.FC = () => {
   const clearHistory = useAppStore(s => s.clearHistory);
 
   const { currencies, conversionResult, isConverting, convertCurrency, fetchCurrencies } = useCurrency();
+
+  const exportCSV = () => {
+    if (!conversionHistory.length) return;
+    const rows = ['Amount,From,To,Result,Rate,Date', ...conversionHistory.map(h =>
+      `${h.amount},${h.from},${h.to},${h.result.toFixed(6)},${h.rate.toFixed(6)},${new Date(h.timestamp).toISOString()}`
+    )];
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'conversion-history.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -176,13 +190,23 @@ export const CurrencyConverter: React.FC = () => {
                   <HiClock className="w-4 h-4" />
                   <span className="text-sm font-semibold uppercase tracking-wide">Recent Conversions</span>
                 </div>
-                <button
-                  onClick={clearHistory}
-                  className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
-                >
-                  <HiTrash className="w-3 h-3" />
-                  Clear
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={exportCSV}
+                    className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-600 transition-colors"
+                    title="Export CSV"
+                  >
+                    <HiArrowDownTray className="w-3 h-3" />
+                    Export
+                  </button>
+                  <button
+                    onClick={clearHistory}
+                    className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+                  >
+                    <HiTrash className="w-3 h-3" />
+                    Clear
+                  </button>
+                </div>
               </div>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {conversionHistory.slice(0, 5).map((item, index) => (
