@@ -124,7 +124,6 @@ export const useAppStore = create<AppState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         preferences: state.preferences,
-        conversionHistory: state.conversionHistory,
       }),
     }
   )
