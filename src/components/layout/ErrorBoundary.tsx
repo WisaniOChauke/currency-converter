@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
     if (import.meta.env.PROD) {
-      import('@sentry/react').then(Sentry => Sentry.captureException(error, { contexts: { errorInfo } }));
+      import('@sentry/react').then(Sentry => Sentry.captureException(error));
     }
   }
 
@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
               We're sorry, but something unexpected happened. Please try refreshing the page.
             </p>
             
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <details className="mb-4 text-left">
                 <summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 mb-2">
                   Error Details

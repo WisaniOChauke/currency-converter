@@ -82,7 +82,7 @@ export const CurrencyConverter: React.FC = () => {
           />
           {error && currencies.length === 0 && (
             <button
-              onClick={fetchCurrencies}
+              onClick={() => fetchCurrencies()}
               className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
             >
               Retry loading currencies
